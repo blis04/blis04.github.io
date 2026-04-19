@@ -1,0 +1,974 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Brandon Lis — ML Product Owner, Solutions Architect, Tech Analyst. CS @ Skidmore College." />
+  <title>Brandon Lis — Portfolio</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:           #09090b;
+      --bg-2:         #0f0f12;
+      --card:         #111115;
+      --card-hover:   #17171c;
+      --border:       #27272a;
+      --border-light: #3f3f46;
+      --accent:       #60a5fa;
+      --accent-h:     #93c5fd;
+      --accent-dim:   rgba(96,165,250,0.1);
+      --violet:       #a78bfa;
+      --green:        #34d399;
+      --text:         #f4f4f5;
+      --muted:        #a1a1aa;
+      --subtle:       #71717a;
+      --mono:         'JetBrains Mono', monospace;
+      --sans:         'Inter', sans-serif;
+      --r:            12px;
+      --t:            0.2s ease;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--sans);
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--border-light); border-radius: 3px; }
+
+    /* ─── BACKGROUND ─────────────────────────────────────────────── */
+    .grid-bg {
+      position: fixed; inset: 0; z-index: -2;
+      background-image:
+        linear-gradient(rgba(96,165,250,.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(96,165,250,.03) 1px, transparent 1px);
+      background-size: 48px 48px;
+      pointer-events: none;
+    }
+    .glow-tr {
+      position: fixed; top: -200px; right: -200px; z-index: -1;
+      width: 700px; height: 700px;
+      background: radial-gradient(circle, rgba(96,165,250,.07) 0%, transparent 65%);
+      pointer-events: none;
+    }
+    .glow-bl {
+      position: fixed; bottom: -200px; left: -100px; z-index: -1;
+      width: 550px; height: 550px;
+      background: radial-gradient(circle, rgba(167,139,250,.05) 0%, transparent 65%);
+      pointer-events: none;
+    }
+
+    /* ─── NAV ────────────────────────────────────────────────────── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      height: 64px; padding: 0 2rem;
+      display: flex; align-items: center; justify-content: space-between;
+      transition: background var(--t), border-bottom var(--t);
+    }
+    nav.scrolled {
+      background: rgba(9,9,11,.88);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo {
+      font-family: var(--mono); font-size: .95rem; font-weight: 500;
+      color: var(--accent); text-decoration: none; letter-spacing: -.02em;
+    }
+    .nav-logo span { color: var(--subtle); }
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a {
+      color: var(--muted); text-decoration: none;
+      font-size: .875rem; font-weight: 500;
+      transition: color var(--t);
+    }
+    .nav-links a:hover { color: var(--text); }
+    .nav-cta {
+      background: var(--accent-dim) !important;
+      color: var(--accent) !important;
+      padding: .4rem 1rem;
+      border-radius: 6px;
+      border: 1px solid rgba(96,165,250,.2);
+    }
+    .nav-cta:hover { background: rgba(96,165,250,.18) !important; }
+
+    .nav-toggle {
+      display: none; flex-direction: column; gap: 5px;
+      cursor: pointer; padding: 4px; background: none; border: none;
+    }
+    .nav-toggle span {
+      width: 22px; height: 2px;
+      background: var(--muted); border-radius: 2px;
+      transition: all .3s;
+    }
+
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .nav-toggle { display: flex; }
+      .nav-links.open {
+        display: flex; flex-direction: column;
+        position: fixed; top: 64px; left: 0; right: 0;
+        background: rgba(9,9,11,.97); backdrop-filter: blur(14px);
+        padding: 1.5rem 2rem; gap: 1.25rem;
+        border-bottom: 1px solid var(--border);
+      }
+    }
+
+    /* ─── HERO ───────────────────────────────────────────────────── */
+    #hero {
+      min-height: 100vh;
+      display: flex; align-items: center;
+      padding: 7rem 2rem 5rem;
+      position: relative; overflow: hidden;
+      /* Full-width so the photo can bleed edge-to-edge */
+    }
+    .hero-inner {
+      max-width: 1100px; margin: 0 auto; width: 100%;
+      position: relative; z-index: 3;
+    }
+    .hero-content {
+      display: flex; flex-direction: column;
+      max-width: 580px;  /* text stays left; photo fills the right half */
+    }
+
+    /* ─── HERO PHOTO (seamless background) ───────────────────────── */
+    /*
+      ================================================================
+      PHOTO SETUP — 2 steps:
+      1. Go to https://www.remove.bg (free, ~5 sec)
+      2. Upload your headshot → download the transparent PNG
+      3. Save it as "photo.png" in the same folder as index.html
+      With a transparent PNG the photo sits perfectly on the dark bg.
+      With the original gray-bg jpg saved as "photo.jpg", the gradient
+      overlays will blend the edges — change the src below accordingly.
+      ================================================================
+    */
+    .hero-photo-bg {
+      position: absolute; right: 0; top: 0;
+      height: 100%; width: 65%;
+      z-index: 1;
+    }
+    .hero-photo-bg img {
+      width: 100%; height: 100%;
+      object-fit: cover; object-position: center top;
+      display: block;
+      opacity: .85;   /* dim — sits deep in the background */
+    }
+    /* Dark overlay keeps text legible; left edge fades to solid bg */
+    .hero-overlay {
+      position: absolute; inset: 0; z-index: 2; pointer-events: none;
+      background:
+        /* hard left strip so text has a clean dark canvas */
+        linear-gradient(100deg, var(--bg) 28%, rgba(9,9,11,.88) 46%, rgba(9,9,11,.45) 65%, transparent 80%),
+        /* bottom fade to bg */
+        linear-gradient(to top, var(--bg) 0%, transparent 18%),
+        /* top fade */
+        linear-gradient(to bottom, rgba(9,9,11,.4) 0%, transparent 15%),
+        /* right edge */
+        linear-gradient(to left, var(--bg) 0%, transparent 5%);
+    }
+    @media (max-width: 900px) {
+      .hero-photo-bg { width: 100%; }
+      .hero-photo-bg img { opacity: .90; }
+      .hero-overlay {
+        background: linear-gradient(to bottom, rgba(9,9,11,.7) 0%, rgba(9,9,11,.6) 60%, var(--bg) 100%);
+      }
+      .hero-content { max-width: 100%; }
+    }
+    .hero-eyebrow {
+      font-family: var(--mono); font-size: .75rem;
+      color: var(--accent); letter-spacing: .1em; text-transform: uppercase;
+      margin-bottom: 1.5rem;
+      display: flex; align-items: center; gap: .75rem;
+    }
+    .hero-eyebrow::before {
+      content: ''; width: 28px; height: 1px; background: var(--accent);
+    }
+    .status-badge {
+      display: inline-flex; align-items: center; gap: .5rem;
+      background: rgba(52,211,153,.07);
+      border: 1px solid rgba(52,211,153,.2);
+      border-radius: 20px; padding: .3rem .9rem;
+      font-size: .72rem; color: var(--green); font-family: var(--mono);
+      margin-bottom: 1.75rem; width: fit-content;
+    }
+    .status-dot {
+      width: 6px; height: 6px; border-radius: 50%; background: var(--green);
+      animation: pulse 2s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%,100% { box-shadow: 0 0 0 0 rgba(52,211,153,.4); }
+      50%      { box-shadow: 0 0 0 5px rgba(52,211,153,0); }
+    }
+    h1.hero-name {
+      font-size: clamp(2.8rem, 7vw, 5.5rem);
+      font-weight: 800; line-height: 1.04; letter-spacing: -.035em;
+      margin-bottom: .5rem;
+    }
+    h1.hero-name .accent { color: var(--accent); }
+    .hero-subtitle {
+      font-size: clamp(1.1rem, 2.5vw, 1.4rem);
+      color: var(--muted); font-weight: 400; margin-bottom: 1.5rem;
+      min-height: 2rem;
+    }
+    .cursor {
+      display: inline-block; width: 2px; height: 1em;
+      background: var(--accent); margin-left: 2px; vertical-align: middle;
+      animation: blink 1s step-end infinite;
+    }
+    @keyframes blink { 0%,100% { opacity:1; } 50% { opacity:0; } }
+    .hero-desc {
+      font-size: .975rem; color: var(--subtle); max-width: 520px;
+      margin-bottom: 2.5rem; line-height: 1.8;
+    }
+    .hero-actions {
+      display: flex; flex-wrap: wrap; gap: .75rem; margin-bottom: 2.5rem;
+    }
+    .btn {
+      display: inline-flex; align-items: center; gap: .5rem;
+      padding: .65rem 1.4rem; border-radius: 8px;
+      font-size: .875rem; font-weight: 600; text-decoration: none;
+      transition: all var(--t); cursor: pointer; border: none; font-family: var(--sans);
+    }
+    .btn-primary { background: var(--accent); color: #09090b; }
+    .btn-primary:hover { background: var(--accent-h); transform: translateY(-1px); }
+    .btn-outline { background: transparent; color: var(--text); border: 1px solid var(--border-light); }
+    .btn-outline:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-1px); }
+    .hero-socials { display: flex; gap: .75rem; }
+    .social-link {
+      width: 40px; height: 40px; border-radius: 8px;
+      border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--muted); text-decoration: none;
+      transition: all var(--t);
+    }
+    .social-link:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-dim); }
+    .hero-scroll {
+      position: absolute; bottom: 2.5rem; left: 50%;
+      transform: translateX(-50%);
+      display: flex; flex-direction: column; align-items: center; gap: .4rem;
+      color: var(--subtle); font-size: .7rem; font-family: var(--mono);
+      letter-spacing: .06em;
+      animation: bounce 2s ease-in-out infinite;
+    }
+    @keyframes bounce {
+      0%,100% { transform: translateX(-50%) translateY(0); }
+      50%      { transform: translateX(-50%) translateY(6px); }
+    }
+
+    /* ─── SECTION SHELL ──────────────────────────────────────────── */
+    section {
+      padding: 5rem 2rem;
+      max-width: 1100px; margin: 0 auto;
+    }
+    .section-label {
+      font-family: var(--mono); font-size: .72rem;
+      color: var(--accent); letter-spacing: .1em; text-transform: uppercase;
+      margin-bottom: .75rem;
+      display: flex; align-items: center; gap: .75rem;
+    }
+    .section-label::before { content: ''; width: 22px; height: 1px; background: var(--accent); }
+    h2.section-title {
+      font-size: clamp(1.75rem, 4vw, 2.4rem);
+      font-weight: 700; letter-spacing: -.03em; margin-bottom: .75rem;
+    }
+    .section-desc {
+      color: var(--muted); max-width: 540px;
+      margin-bottom: 3rem; font-size: .93rem; line-height: 1.8;
+    }
+    hr.divider {
+      border: none; border-top: 1px solid var(--border); margin: 0 2rem;
+    }
+
+    /* ─── ABOUT ──────────────────────────────────────────────────── */
+    .about-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: start;
+    }
+    @media (max-width: 768px) { .about-grid { grid-template-columns: 1fr; } }
+    .about-text p { color: var(--muted); margin-bottom: 1rem; font-size: .93rem; line-height: 1.85; }
+    .about-text p strong { color: var(--text); }
+    .about-cards { display: flex; flex-direction: column; gap: 1rem; }
+    .info-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: var(--r); padding: 1.25rem 1.5rem;
+      transition: border-color var(--t);
+    }
+    .info-card:hover { border-color: var(--border-light); }
+    .info-card-label {
+      font-family: var(--mono); font-size: .68rem;
+      color: var(--subtle); letter-spacing: .08em; text-transform: uppercase;
+      margin-bottom: .45rem;
+    }
+    .info-card-value { font-weight: 600; font-size: .95rem; }
+    .info-card-sub { font-size: .8rem; color: var(--muted); margin-top: .2rem; }
+    .gpa { color: var(--green); }
+
+    /* ─── SKILLS ─────────────────────────────────────────────────── */
+    .skills-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 1.5rem;
+    }
+    .skill-group {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: var(--r); padding: 1.5rem;
+      transition: border-color var(--t), transform var(--t);
+    }
+    .skill-group:hover { border-color: var(--border-light); transform: translateY(-2px); }
+    .skill-group-title {
+      font-family: var(--mono); font-size: .72rem; color: var(--accent);
+      letter-spacing: .06em; text-transform: uppercase; margin-bottom: 1rem;
+      display: flex; align-items: center; gap: .5rem;
+    }
+    .skill-group-title::before {
+      content: ''; width: 7px; height: 7px; border-radius: 50%; background: var(--accent);
+    }
+    .skill-tags { display: flex; flex-wrap: wrap; gap: .45rem; }
+    .skill-tag {
+      background: rgba(255,255,255,.04); border: 1px solid var(--border);
+      border-radius: 4px; padding: .22rem .6rem;
+      font-size: .75rem; color: var(--muted); font-family: var(--mono);
+    }
+
+    /* ─── EXPERIENCE ─────────────────────────────────────────────── */
+    .exp-list { display: flex; flex-direction: column; gap: 1.5rem; }
+    .exp-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: var(--r); padding: 1.75rem 2rem;
+      position: relative; overflow: hidden;
+      transition: border-color var(--t), transform var(--t);
+    }
+    .exp-card::before {
+      content: ''; position: absolute; top: 0; left: 0;
+      width: 3px; height: 100%; background: var(--accent);
+      opacity: 0; transition: opacity var(--t);
+    }
+    .exp-card:hover { border-color: var(--border-light); transform: translateX(4px); }
+    .exp-card:hover::before { opacity: 1; }
+    .exp-header {
+      display: flex; justify-content: space-between; align-items: flex-start;
+      flex-wrap: wrap; gap: .5rem; margin-bottom: .35rem;
+    }
+    .exp-company { font-weight: 700; font-size: 1.05rem; }
+    .exp-date { font-family: var(--mono); font-size: .75rem; color: var(--subtle); }
+    .exp-role { color: var(--accent); font-size: .875rem; font-weight: 500; margin-bottom: .2rem; }
+    .exp-location { font-size: .78rem; color: var(--subtle); margin-bottom: 1rem; }
+    .exp-bullets { list-style: none; display: flex; flex-direction: column; gap: .5rem; }
+    .exp-bullets li {
+      font-size: .875rem; color: var(--muted); line-height: 1.75;
+      padding-left: 1.3rem; position: relative;
+    }
+    .exp-bullets li::before { content: '→'; position: absolute; left: 0; color: var(--accent); font-size: .75rem; }
+
+    /* ─── PROJECTS ───────────────────────────────────────────────── */
+    .projects-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem;
+    }
+    .project-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: var(--r); padding: 1.75rem;
+      display: flex; flex-direction: column; gap: .9rem;
+      position: relative; overflow: hidden;
+      transition: border-color var(--t), transform var(--t), background var(--t);
+    }
+    .project-card::after {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, var(--accent), var(--violet));
+      opacity: 0; transition: opacity var(--t);
+    }
+    .project-card:hover { border-color: var(--border-light); transform: translateY(-4px); background: var(--card-hover); }
+    .project-card:hover::after { opacity: 1; }
+    .project-card.placeholder { opacity: .6; }
+    .project-card.placeholder:hover { opacity: 1; }
+    .project-top { display: flex; justify-content: space-between; align-items: flex-start; }
+    .project-icon {
+      width: 40px; height: 40px; border-radius: 8px;
+      background: var(--accent-dim);
+      display: flex; align-items: center; justify-content: center; color: var(--accent);
+    }
+    .project-links { display: flex; gap: .45rem; }
+    .project-link {
+      width: 30px; height: 30px; border-radius: 6px;
+      border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--muted); text-decoration: none;
+      transition: all var(--t);
+    }
+    .project-link:hover { border-color: var(--accent); color: var(--accent); }
+    .project-link.disabled { opacity: .35; cursor: not-allowed; pointer-events: none; }
+    .placeholder-label {
+      font-family: var(--mono); font-size: .65rem;
+      color: var(--subtle); border: 1px dashed var(--border);
+      padding: .15rem .5rem; border-radius: 4px; letter-spacing: .04em;
+      width: fit-content;
+    }
+    .project-name { font-weight: 700; font-size: .98rem; }
+    .project-desc { font-size: .84rem; color: var(--muted); line-height: 1.75; flex: 1; }
+    .project-tags { display: flex; flex-wrap: wrap; gap: .4rem; margin-top: auto; }
+    .project-tag {
+      font-family: var(--mono); font-size: .7rem;
+      padding: .2rem .55rem; border-radius: 4px;
+      background: rgba(96,165,250,.07); color: var(--accent);
+      border: 1px solid rgba(96,165,250,.15);
+    }
+
+    /* ─── LEADERSHIP ─────────────────────────────────────────────── */
+    .leadership-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem;
+    }
+    .leadership-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: var(--r); padding: 1.5rem;
+      transition: border-color var(--t), transform var(--t);
+    }
+    .leadership-card:hover { border-color: var(--border-light); transform: translateY(-2px); }
+    .l-org { color: var(--accent); font-size: .8rem; font-weight: 500; margin-bottom: .2rem; }
+    .leadership-card h3 { font-size: .95rem; font-weight: 600; margin-bottom: .2rem; }
+    .l-date { font-family: var(--mono); font-size: .7rem; color: var(--subtle); margin-bottom: .8rem; }
+    .leadership-card ul { list-style: none; display: flex; flex-direction: column; gap: .4rem; }
+    .leadership-card li {
+      font-size: .83rem; color: var(--muted);
+      padding-left: 1rem; position: relative; line-height: 1.65;
+    }
+    .leadership-card li::before { content: '·'; position: absolute; left: 0; color: var(--accent); font-weight: 700; }
+
+    /* ─── CONTACT ────────────────────────────────────────────────── */
+    #contact { text-align: center; }
+    #contact .section-label { justify-content: center; }
+    #contact .section-label::before { display: none; }
+    .contact-desc { color: var(--muted); max-width: 440px; margin: 0 auto 2rem; font-size: .93rem; line-height: 1.8; }
+    .contact-actions { display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap; }
+    .contact-links {
+      display: flex; justify-content: center; gap: 1.5rem;
+      margin-top: 2rem; flex-wrap: wrap;
+    }
+    .contact-link {
+      display: flex; align-items: center; gap: .4rem;
+      color: var(--subtle); text-decoration: none;
+      font-size: .8rem; font-family: var(--mono);
+      transition: color var(--t);
+    }
+    .contact-link:hover { color: var(--accent); }
+
+    /* ─── FOOTER ─────────────────────────────────────────────────── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 2rem; text-align: center;
+      font-size: .75rem; color: var(--subtle); font-family: var(--mono);
+    }
+    footer a { color: var(--subtle); text-decoration: none; }
+    footer a:hover { color: var(--accent); }
+
+    /* ─── FADE-IN ─────────────────────────────────────────────────── */
+    .fade-in {
+      opacity: 0; transform: translateY(22px);
+      transition: opacity .65s ease, transform .65s ease;
+    }
+    .fade-in.visible { opacity: 1; transform: translateY(0); }
+  </style>
+</head>
+<body>
+
+  <!-- Background decoration -->
+  <div class="grid-bg"></div>
+  <div class="glow-tr"></div>
+  <div class="glow-bl"></div>
+
+  <!-- ─────────────────────── NAV ─────────────────────────────── -->
+  <nav id="navbar">
+    <a href="#hero" class="nav-logo">bl<span>.</span>dev</a>
+
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#about">About</a></li>
+      <li><a href="#skills">Skills</a></li>
+      <li><a href="#experience">Experience</a></li>
+      <li><a href="#projects">Projects</a></li>
+      <li><a href="#contact" class="nav-cta">Contact</a></li>
+    </ul>
+
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu" onclick="toggleNav()">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <!-- ─────────────────────── HERO ─────────────────────────────── -->
+  <section id="hero">
+
+    <!--
+      ================================================================
+      PHOTO: save your headshot as "photo.png" (transparent bg via
+      remove.bg) OR "photo.jpg" (original) in this same folder.
+      Change the src below to match whichever filename you use.
+      ================================================================
+    -->
+    <div class="hero-photo-bg">
+      <img src="photo2.png" alt="" onerror="this.parentElement.style.display='none'" />
+    </div>
+    <div class="hero-overlay"></div>
+
+    <div class="hero-inner">
+    <!-- text content -->
+    <div class="hero-content">
+      <div class="hero-eyebrow">Based in Colorado · Open to relocate</div>
+
+      <div class="status-badge">
+        <div class="status-dot"></div>
+        Open to full-time roles — May 2026
+      </div>
+
+      <h1 class="hero-name">Brandon <span class="accent">Lis</span></h1>
+
+      <p class="hero-subtitle">
+        <span id="typewriter"></span><span class="cursor"></span>
+      </p>
+
+      <p class="hero-desc">
+        CS student at Skidmore College building at the intersection of ML, product strategy,
+        and technical architecture. I turn complex data into decisions that ship.
+      </p>
+
+      <div class="hero-actions">
+        <a href="#projects" class="btn btn-primary">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+          View Projects
+        </a>
+        <!--
+          ================================================================
+          UPDATE: Drop your resume PDF into the website folder as "resume.pdf"
+          ================================================================
+        -->
+        <a href="./resume.pdf" target="_blank" class="btn btn-outline">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          Resume
+        </a>
+        <a href="https://github.com/blis04" target="_blank" class="btn btn-outline">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+          GitHub
+        </a>
+      </div>
+
+      <div class="hero-socials">
+        <!--
+          ================================================================
+          UPDATE: Confirm your LinkedIn slug — currently /in/blis
+          ================================================================
+        -->
+        <a href="https://linkedin.com/in/blis" target="_blank" class="social-link" title="LinkedIn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+        </a>
+        <a href="mailto:Blis@skidmore.edu" class="social-link" title="Email">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,12 2,6"/></svg>
+        </a>
+        <!--
+          ================================================================
+          OPTIONAL: Add Twitter/X, blog, Devpost, etc. here
+          ================================================================
+        -->
+      </div>
+    </div><!-- end .hero-content -->
+
+    </div><!-- end .hero-inner -->
+
+    <div class="hero-scroll">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg>
+      scroll
+    </div>
+  </section>
+
+  <hr class="divider" />
+
+  <!-- ─────────────────────── ABOUT ────────────────────────────── -->
+  <section id="about">
+    <div class="section-label">About me</div>
+    <h2 class="section-title">Who I am</h2>
+
+    <div class="about-grid fade-in">
+      <div class="about-text">
+        <p>I'm <strong>Brandon Lis</strong>, a Computer Science student at Skidmore College graduating May 2026, with hands-on experience in ML product ownership, AI solutions architecture, and technical research.</p>
+        <p>My internships at <strong>Graylog</strong> (ML Product Owner), <strong>Hexagon</strong> (AI Product Owner), and <strong>Creative Dock</strong> (AI Research Intern) gave me full-lifecycle exposure — from research and prototyping through stakeholder alignment and client delivery.</p>
+        <p>I bridge the gap between <strong>technical depth and business impact</strong> — whether that's designing anomaly detection pipelines, building AI-powered automation tools, or translating raw data into strategic recommendations executives can act on.</p>
+        <p>Outside of tech, I captain the Skidmore Swim Team and serve on the Student-Athlete Advisory Committee — accountability, leadership, and performance under pressure are as natural as writing code.</p>
+      </div>
+
+      <div class="about-cards">
+        <div class="info-card">
+          <div class="info-card-label">Education</div>
+          <div class="info-card-value">Skidmore College</div>
+          <div class="info-card-sub">B.A. Computer Science &nbsp;·&nbsp; <span class="gpa">GPA 3.66 / 4.00</span></div>
+          <div class="info-card-sub" style="margin-top:.25rem; color:var(--subtle)">Expected May 2026 &nbsp;·&nbsp; Saratoga Springs, NY</div>
+        </div>
+        <div class="info-card">
+          <div class="info-card-label">Targeting</div>
+          <div class="info-card-value">Product Dev · Solutions Architect · Tech Analyst</div>
+          <div class="info-card-sub">Full-time roles starting May 2026</div>
+        </div>
+        <div class="info-card">
+          <div class="info-card-label">Location</div>
+          <div class="info-card-value">Open to remote &amp; hybrid</div>
+          <div class="info-card-sub">Based in Colorado &nbsp;·&nbsp; Willing to relocate</div>
+        </div>
+        <div class="info-card">
+          <div class="info-card-label">Track record</div>
+          <div class="info-card-value">3 internships &nbsp;·&nbsp; 2 research projects</div>
+          <div class="info-card-sub">ML · AI · Product · Architecture · Research</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider" />
+
+  <!-- ─────────────────────── SKILLS ───────────────────────────── -->
+  <section id="skills">
+    <div class="section-label">Toolbox</div>
+    <h2 class="section-title">What I work with</h2>
+    <p class="section-desc">A mix of technical depth and product fluency — built across internships, coursework, and independent research.</p>
+
+    <div class="skills-grid fade-in">
+      <div class="skill-group">
+        <div class="skill-group-title">Languages</div>
+        <div class="skill-tags">
+          <span class="skill-tag">Python</span>
+          <span class="skill-tag">Java</span>
+          <span class="skill-tag">C</span>
+          <span class="skill-tag">SQL</span>
+        </div>
+      </div>
+
+      <div class="skill-group">
+        <div class="skill-group-title">Technologies</div>
+        <div class="skill-tags">
+          <span class="skill-tag">PyTorch</span>
+          <span class="skill-tag">TensorFlow</span>
+          <span class="skill-tag">Docker</span>
+          <span class="skill-tag">OpenSearch</span>
+          <span class="skill-tag">ElasticSearch</span>
+          <span class="skill-tag">Postgres</span>
+          <span class="skill-tag">Git / GitHub</span>
+        </div>
+      </div>
+
+      <div class="skill-group">
+        <div class="skill-group-title">DS / ML</div>
+        <div class="skill-tags">
+          <span class="skill-tag">Anomaly Detection</span>
+          <span class="skill-tag">Embeddings</span>
+          <span class="skill-tag">Semantic Clustering</span>
+          <span class="skill-tag">BERT</span>
+          <span class="skill-tag">LSA</span>
+          <span class="skill-tag">NLP</span>
+          <span class="skill-tag">Similarity Metrics</span>
+          <span class="skill-tag">RCF</span>
+        </div>
+      </div>
+
+      <div class="skill-group">
+        <div class="skill-group-title">Product / Business</div>
+        <div class="skill-tags">
+          <span class="skill-tag">Agile / Scrum</span>
+          <span class="skill-tag">Sprint Delivery</span>
+          <span class="skill-tag">Stakeholder Comms</span>
+          <span class="skill-tag">Competitive Analysis</span>
+          <span class="skill-tag">Roadmapping</span>
+          <span class="skill-tag">Client Management</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider" />
+
+  <!-- ─────────────────────── EXPERIENCE ───────────────────────── -->
+  <section id="experience">
+    <div class="section-label">Work history</div>
+    <h2 class="section-title">Experience</h2>
+    <p class="section-desc">Roles spanning app development, ML infrastructure, enterprise AI, and research-driven product — across startups, scale-ups, and global enterprises.</p>
+
+    <div class="exp-list fade-in">
+
+      <!-- ── CURRENT: SimplifyForward ── -->
+      <div class="exp-card">
+        <div class="exp-header">
+          <span class="exp-company">SimplifyForward</span>
+          <span class="exp-date">2026 – Present</span>
+        </div>
+        <div class="exp-role">Sole App Developer</div>
+        <div class="exp-location">Colorado Front Range &nbsp;·&nbsp; Startup</div>
+        <ul class="exp-bullets">
+          <li>Sole developer of a full-stack SaaS platform combining Client, Consultant, Partner, and Admin portals into a unified 10-module framework that guides seniors through retirement-stage life transitions.</li>
+          <li>Translates business analytics, competitor workflow research, and investor pitch feedback directly into product architecture — owning the entire build from data model through UX delivery.</li>
+          <li>Platform enables individual users to offload and structure every dimension of a senior transition: financial clarity, estate planning, vendor coordination, digital legacy, and forward-living roadmaps.</li>
+          <li>Designed for scalable franchise expansion across 50+ US markets with a recurring SaaS + consultant revenue model targeting $1.2M ARR by Year 3.</li>
+        </ul>
+      </div>
+
+      <div class="exp-card">
+        <div class="exp-header">
+          <span class="exp-company">Graylog</span>
+          <span class="exp-date">May 2025 – Aug 2025</span>
+        </div>
+        <div class="exp-role">Intern ML Product Owner</div>
+        <div class="exp-location">Boulder, Colorado</div>
+        <ul class="exp-bullets">
+          <li>Designed and validated end-to-end anomaly detection workflows in OpenSearch, integrating Random Cut Forest (RCF) and localization algorithms to enable scalable root-cause identification across high-cardinality log data.</li>
+          <li>Implemented and benchmarked vector embedding models for semantic clustering of log data, balancing dimension size, similarity metrics, and index performance for high-precision detection.</li>
+          <li>Developed a standardized ML workflow framework that reduced manual analysis and improved client decision-making — adopted into current anomaly detection software.</li>
+        </ul>
+      </div>
+
+      <div class="exp-card">
+        <div class="exp-header">
+          <span class="exp-company">Hexagon</span>
+          <span class="exp-date">Jan 2025 – May 2025</span>
+        </div>
+        <div class="exp-role">Intern AI Product Owner</div>
+        <div class="exp-location">Prague, Czech Republic</div>
+        <ul class="exp-bullets">
+          <li>Engineered an AI-powered web scraper with self-learning capabilities for a global enterprise client, automating competitor data collection and continuously surfacing high-value business intelligence.</li>
+          <li>Presented a live product demo, gathered client feedback to build a v2 roadmap, and calculated project costs demonstrating a profit margin supporting continued investment.</li>
+          <li>Partnered with cross-functional stakeholders across a five-sprint agile cycle to prioritize business gaps and translate findings into key deliverables.</li>
+        </ul>
+      </div>
+
+      <div class="exp-card">
+        <div class="exp-header">
+          <span class="exp-company">Creative Dock</span>
+          <span class="exp-date">Jan 2025 – May 2025</span>
+        </div>
+        <div class="exp-role">AI Software Research Intern</div>
+        <div class="exp-location">Prague, Czech Republic</div>
+        <ul class="exp-bullets">
+          <li>Engineered AI prompt pipelines to automate HR communication tooling, delivering competitive landscape analyses to product and project managers.</li>
+          <li>Produced competitor analysis pitch decks that improved product demo quality and informed strategic positioning.</li>
+          <li>Translated client feedback into prioritized product features, aligning each sprint deliverable with evolving stakeholder needs.</li>
+        </ul>
+      </div>
+
+    </div>
+  </section>
+
+  <hr class="divider" />
+
+  <!-- ─────────────────────── PROJECTS ─────────────────────────── -->
+  <section id="projects">
+    <div class="section-label">Built work</div>
+    <h2 class="section-title">Projects</h2>
+    <p class="section-desc">
+      Real and ongoing work — from compilers to ML pipelines.
+      <!--
+        ================================================================
+        NOTE: The 4 placeholder cards below are waiting for your real
+        projects. For each one, update: title, description, tags, and
+        both link hrefs (GitHub repo + live demo if applicable).
+        Mark the live link as disabled if there's no deployed URL.
+        ================================================================
+      -->
+    </p>
+
+    <div class="projects-grid fade-in">
+
+      <!-- ── PROJECT 1: B-Minor Compiler ── -->
+      <div class="project-card">
+        <div class="project-top">
+          <div class="project-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+          </div>
+          <div class="project-links">
+            <!--
+              UPDATE: Replace href with the specific repo URL for this project
+              e.g. https://github.com/blis04/bminor-compiler
+            -->
+            <a href="https://github.com/blis04" target="_blank" class="project-link" title="View on GitHub">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+            </a>
+            <!-- No live demo for this project — keeping disabled -->
+            <span class="project-link disabled" title="No live demo">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+            </span>
+          </div>
+        </div>
+        <div class="project-name">B-Minor Compiler in C</div>
+        <p class="project-desc">Full compiler pipeline from lexical analysis through code generation. Built in C with an emphasis on data structures, performance profiling, and unit testing. Demonstrates end-to-end command of compiler design principles.</p>
+        <div class="project-tags">
+          <span class="project-tag">C</span>
+          <span class="project-tag">Compiler Design</span>
+          <span class="project-tag">Parsing</span>
+          <span class="project-tag">Data Structures</span>
+        </div>
+      </div>
+
+      <!-- ── PROJECT 2: Anti-Phishing Research ── -->
+      <div class="project-card">
+        <div class="project-top">
+          <div class="project-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          </div>
+          <div class="project-links">
+            <!--
+              UPDATE: Replace href with the specific repo URL for this project
+              e.g. https://github.com/blis04/antiphishing-research
+            -->
+            <a href="https://github.com/blis04" target="_blank" class="project-link" title="View on GitHub">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+            </a>
+            <a href="https://rwolfe26-phishing-detector.hf.space/" target="_blank" class="project-link" title="Live demo">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+            </a>
+          </div>
+        </div>
+        <div class="project-name">Cybersecurity Anti-Phishing Research</div>
+        <p class="project-desc">Real-time phishing detection pipeline integrating BERT and LSA embeddings with a TensorFlow classification backend. Designed for semantic email analysis at scale, built on a systematic review of 50+ research sources.</p>
+        <div class="project-tags">
+          <span class="project-tag">Python</span>
+          <span class="project-tag">BERT</span>
+          <span class="project-tag">TensorFlow</span>
+          <span class="project-tag">NLP</span>
+          <span class="project-tag">LSA</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <hr class="divider" />
+
+  <!-- ─────────────────────── LEADERSHIP ───────────────────────── -->
+  <section id="leadership">
+    <div class="section-label">Beyond code</div>
+    <h2 class="section-title">Leadership</h2>
+    <p class="section-desc">Competing at the varsity level while driving campus impact — accountability, teamwork, and performance under pressure.</p>
+
+    <div class="leadership-grid fade-in">
+      <div class="leadership-card">
+        <div class="l-org">Skidmore College Athletics</div>
+        <h3>Swim Team Captain</h3>
+        <div class="l-date">Sept 2025 – May 2026</div>
+        <ul>
+          <li>Led, mentored, and motivated teammates at the varsity level</li>
+          <li>Coordinated team activities and drove a culture of accountability</li>
+          <li>Recieved Coaches Award for representing intangable qualities like leadership, work ethic and selflessnes supporting team success</li>
+        </ul>
+      </div>
+      <div class="leadership-card">
+        <div class="l-org">Student-Athlete Advisory Committee (SAAC)</div>
+        <h3>Member</h3>
+        <div class="l-date">Sept 2024 – May 2026</div>
+        <ul>
+          <li>Contributed to social impact initiatives for campus and surrounding community like donation drives, senior care volunteering and more</li>
+          <li>Organized programs fostering community engagement and athlete well-being, allowing student-athletes to give back to their community in the most impactful way</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider" />
+
+  <!-- ─────────────────────── CONTACT ──────────────────────────── -->
+  <section id="contact">
+    <div class="section-label">Get in touch</div>
+    <h2 class="section-title">Let's connect</h2>
+    <p class="contact-desc">
+      Actively looking for full-time roles in product development, solutions architecture, and tech analysis starting May 2026.
+      If something caught your eye — reach out.
+    </p>
+
+    <div class="contact-actions">
+      <!--
+        ================================================================
+        UPDATE: Replace with your preferred email (personal if you have one)
+        ================================================================
+      -->
+      <a href="mailto:Blis@skidmore.edu" class="btn btn-primary">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,12 2,6"/></svg>
+        Send an email
+      </a>
+      <!--
+        ================================================================
+        UPDATE: Confirm your LinkedIn slug (currently /in/blis)
+        ================================================================
+      -->
+      <a href="https://linkedin.com/in/blis" target="_blank" class="btn btn-outline">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+        LinkedIn
+      </a>
+    </div>
+
+    <div class="contact-links">
+      <a href="https://github.com/blis04" target="_blank" class="contact-link">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+        github.com/blis04
+      </a>
+      <a href="mailto:Blis@skidmore.edu" class="contact-link">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,12 2,6"/></svg>
+        Blis@skidmore.edu
+      </a>
+      <!--
+        ================================================================
+        OPTIONAL: Phone number — add if you want it visible here
+        <a href="tel:+17205896638" class="contact-link">
+          <svg>...</svg>
+          720-589-6638
+        </a>
+        ================================================================
+      -->
+    </div>
+  </section>
+
+  <!-- ─────────────────────── FOOTER ───────────────────────────── -->
+  <footer>
+    <p>Built by <a href="#hero">Brandon Lis</a> &nbsp;·&nbsp; <a href="https://github.com/blis04" target="_blank">github.com/blis04</a></p>
+  </footer>
+
+  <!-- ─────────────────────── JS ───────────────────────────────── -->
+  <script>
+    // Nav scroll effect
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+      navbar.classList.toggle('scrolled', window.scrollY > 20);
+    });
+
+    // Mobile nav toggle
+    function toggleNav() {
+      document.getElementById('navLinks').classList.toggle('open');
+    }
+    document.querySelectorAll('.nav-links a').forEach(link => {
+      link.addEventListener('click', () => document.getElementById('navLinks').classList.remove('open'));
+    });
+
+    // Typewriter effect
+    const phrases = ['ML Product Owner', 'Solutions Architect', 'Tech Analyst', 'CS @ Skidmore College'];
+    let pi = 0, ci = 0, deleting = false;
+    const tw = document.getElementById('typewriter');
+    function type() {
+      const cur = phrases[pi];
+      if (deleting) {
+        tw.textContent = cur.substring(0, ci--);
+        if (ci < 0) { deleting = false; pi = (pi + 1) % phrases.length; setTimeout(type, 500); return; }
+        setTimeout(type, 38);
+      } else {
+        tw.textContent = cur.substring(0, ci++);
+        if (ci > cur.length) { deleting = true; setTimeout(type, 2000); return; }
+        setTimeout(type, 68);
+      }
+    }
+    setTimeout(type, 900);
+
+    // Fade-in on scroll
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } });
+    }, { threshold: 0.08 });
+    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+  </script>
+
+</body>
+</html>
